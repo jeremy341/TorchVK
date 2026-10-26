@@ -1,50 +1,51 @@
-# Related work and differentiation (2026-10-10)
+# Related work
 
-This is a **planning snapshot** based on public code/docs. No competitor run has been independently reproduced on our RX 5600 XT. Re-verify before publishing a claim.
+Snapshot date: 2026-10-10. This is a planning snapshot based on public code and documentation. No competitor has been independently reproduced on the RX 5600 XT yet. Check everything again before publishing a claim.
 
-## Closest: zainsharief/torchvulkan
-https://github.com/zainsharief/torchvulkan
-https://pypi.org/project/torchvulkan/
+## Closest project: zainsharief/torchvulkan
 
-- PyTorch PrivateUse1 Vulkan device, Slang shaders compiled to SPIR-V, C++ extension and VMA allocation.
-- Reports cross-platform wheels including Windows.
-- Documents MNIST MLP training (forward, loss, backward, Adam) and a tiny GPT/Transformer example.
-- Unsupported operations fall back to CPU by default. `TORCHVULKAN_STRICT=1` is documented to error on fallback. Therefore it is critical to test strict runs, not assume training is native.
-- Published `benchmark/benchmark.py` uses FP16 for accelerator and FP32 for CPU. Useful practical comparison; **not a same-dtype comparison isolating backend quality**.
-- Our role must be more than reproducing these examples. Inspect actual native operation coverage and backward behavior.
+- Repository: https://github.com/zainsharief/torchvulkan
+- Package: https://pypi.org/project/torchvulkan/
 
-## Other relevant efforts
-**Peterc3-dev/torch-vulkan** — https://github.com/Peterc3-dev/torch-vulkan  
-Independent Vulkan/PyTorch device, oriented to LLM inference and GGUF kernels on Radeon 890M; its README says full autograd training is not supported.
+What it does:
 
-**PyTorch historical Vulkan backend** — https://docs.pytorch.org/tutorials/unstable/vulkan_workflow.html  
-Primarily inference/mobile-oriented and now documented as unmaintained. NOT evidence that third-party Vulkan training does not exist.
+- Registers a PyTorch PrivateUse1 Vulkan device. Its shaders are written in Slang, compiled to SPIR-V, and built with a C++ extension and VMA allocation.
+- Publishes cross-platform wheels, including Windows.
+- Documents MNIST MLP training (forward, loss, backward and Adam) and a tiny GPT-style transformer.
+- Falls back to the CPU for unsupported operations by default. The README says `TORCHVULKAN_STRICT=1` makes fallbacks raise errors. So strict runs need to be tested, not assumed to be native.
+- Its `benchmark/benchmark.py` uses FP16 on the accelerator and FP32 on the CPU. That is a practical comparison, but it does not isolate backend speed at equal precision.
 
-**ExecuTorch Vulkan delegate** — https://docs.pytorch.org/executorch/stable/  
-A model export/edge inference/deployment stack rather than general eager PyTorch training.
+Our work has to go further than rerunning these examples. We need to check the native operator coverage and how the backward pass really behaves.
 
-**Meganeura** — https://arxiv.org/abs/2608.01563 ; https://github.com/kvark/meganeura  
-Portable GPU training and inference with graph compiler, autodiff and optimizers over Vulkan/Metal. Training on Vulkan is established in research.
+## Other relevant projects
 
-**torch-webgpu** — https://github.com/jmaczan/torch-webgpu ; https://arxiv.org/abs/2604.02344  
-Adjacent out-of-tree backend and dispatch/fusion research.
+**Peterc3-dev/torch-vulkan**: https://github.com/Peterc3-dev/torch-vulkan. An independent Vulkan PyTorch device aimed at LLM inference and GGUF kernels on a Radeon 890M. The README says full autograd training is not supported.
 
-## Differentiation table (hypotheses, NOT existing accomplishments)
+**PyTorch's Vulkan backend (legacy)**: https://docs.pytorch.org/tutorials/unstable/vulkan_workflow.html. Mainly for inference and mobile use, and now documented as unmaintained. This does not show that third-party Vulkan training does not exist.
+
+**ExecuTorch Vulkan delegate**: https://docs.pytorch.org/executorch/stable/. A stack for exporting models and running edge inference. It is not general eager-mode PyTorch training.
+
+**Meganeura**: https://arxiv.org/abs/2608.01563 and https://github.com/kvark/meganeura. Portable GPU training and inference with a graph compiler, autodiff and optimizers over Vulkan and Metal. Vulkan training is established in the research literature.
+
+**torch-webgpu**: https://github.com/jmaczan/torch-webgpu and https://arxiv.org/abs/2604.02344. An adjacent out-of-tree backend that studies dispatch and fusion.
+
+## Differentiation (hypotheses, not accomplishments)
 
 | Direction | Evidence needed |
 | --- | --- |
-| RDNA1/Windows compatibility | Real successful strict GPU-only run or documented incompatibility and fix |
-| Verified GPU-only training | Operator-level trace including forward/backward/loss/optimizer and zero fallback |
-| Small-VRAM CNN training | Full CNN backward and fair comparison of model/batch support and VRAM peaks |
-| Architecture-specific speed | Ablation versus upstream, same dtype/workload/hardware with uncertainty |
-| Better engineering diagnostics | Repeatable operator coverage tests and documented actionable errors |
-| Reproducible research | Open scripts, raw logs, configuration manifests and explicit limitations |
+| RDNA1 and Windows compatibility | A successful strict GPU-only run, or a documented incompatibility and fix |
+| Verified GPU-only training | An operator-level trace covering forward, backward, loss and optimizer, with zero fallback |
+| Small-VRAM CNN training | Full CNN backward, and a fair comparison of supported model sizes, batch sizes and VRAM peaks |
+| Architecture-specific speed | An ablation against upstream, on the same dtype, workload and hardware, with uncertainty reported |
+| Better engineering diagnostics | Repeatable operator coverage tests and clear, actionable error messages |
+| Reproducible research | Open scripts, raw logs, configuration manifests and stated limitations |
 
-**Warning:** Others may already implement some of these. Only measurements on current revisions determine a valid gap.
+Warning: others may already have built some of these. Only measurements on current code versions can establish a real gap.
 
-## Practical decision after R0
-A. Contribute optimizations/driver fixes upstream (default preferred if compatible).
-B. Build a narrow research instrument/plugin alongside an existing backend.
-C. Write a separate backend only if a specific architecture/license/research limitation makes A or B inappropriate.
+## Decision after R0
 
-Do not claim “first Vulkan training backend” or “only Vulkan PyTorch training” in README, outreach or paper.
+A. Contribute optimizations or driver fixes upstream. This is the preferred option if it is compatible.
+B. Build a narrow research tool or plugin that works alongside an existing backend.
+C. Write a separate backend only if a specific architecture, license or research limitation rules out A and B.
+
+Do not describe the project as the "first Vulkan training backend" or the "only Vulkan PyTorch training" in the README, in outreach, or in a paper.

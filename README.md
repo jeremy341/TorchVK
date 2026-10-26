@@ -1,24 +1,26 @@
 # TorchVK
 
-**Experimental research into efficient PyTorch training through Vulkan on older consumer GPUs.**
+Research into PyTorch training through Vulkan on older consumer GPUs.
 
-TorchVK investigates whether older Windows AMD GPUs with limited practical ROCm support (starting with Radeon RX 5600 XT, 6 GB) can run verified, efficient ML training with Vulkan. The project is in the **planning and feasibility stage**. It does not yet offer a usable backend.
+TorchVK asks whether older Windows AMD GPUs, starting with the Radeon RX 5600 XT (6 GB), can run verified and efficient ML training through Vulkan. AMD's ROCm support for these cards is limited. The project is at the planning and feasibility stage. It does not yet provide a usable backend.
 
-**Important:** Existing projects such as [torchvulkan](https://github.com/zainsharief/torchvulkan) already document PyTorch/Vulkan training, including MNIST and small-Transformer examples. TorchVK does **not** claim to be the first Vulkan training backend. Our initial task is to identify and measure specific gaps in older-GPU compatibility, hidden CPU fallback, low-VRAM execution, or performance, and determine whether contributing upstream is preferable to a separate implementation.
+Existing projects already document PyTorch training over Vulkan, including MNIST and a small transformer. For example, [torchvulkan](https://github.com/zainsharief/torchvulkan) does this. TorchVK does not claim to be the first Vulkan training backend. The first step is to find and measure a specific gap: hidden CPU fallback, compatibility on older hardware, low-VRAM operation, or speed. Then decide whether contributing upstream makes more sense than writing a separate implementation.
 
 ## Start here
+
 - [Documentation and research index](docs/INDEX.md)
 - [Project charter](docs/PROJECT_CHARTER.md)
-- [Related work and differentiation](docs/RELATED_WORK.md)
+- [Related work](docs/RELATED_WORK.md)
 - [Research roadmap](docs/ROADMAP.md)
 - [Benchmark protocol](docs/EVALUATION.md)
-- [Codex / contributor instructions](AGENTS.md)
+- [Contributor instructions](AGENTS.md)
 
 ## Possible architecture (not implemented)
+
 ```text
-PyTorch → external backend / PrivateUse1 → Vulkan runtime → SPIR-V compute shaders → GPU
+PyTorch -> external backend (PrivateUse1) -> Vulkan runtime -> SPIR-V compute shaders -> GPU
 ```
 
-The approach remains open pending a competitor and hardware feasibility audit. Planned investigations include GPU compute correctness, GEMM/tiling, strict GPU-only training, and controlled CPU/DirectML/Vulkan comparisons.
+The design is still open. Planned investigations include GPU compute correctness, matrix multiplication and tiling, strict GPU-only training, and controlled comparisons with CPU, DirectML and Vulkan backends.
 
-**Status: research and documentation only. No performance or compatibility results are claimed.**
+Status: research and documentation only. No performance or compatibility results are claimed.
