@@ -1,3 +1,3 @@
-# TorchVK
+# TorchVK README validation test
 
-Researching verified PyTorch training with Vulkan on older AMD GPUs, starting with the RX 5600 XT. No usable backend yet.
+This README is a test fixture for the project description check. TorchVK explores whether PyTorch training through Vulkan can run correctly and efficiently on older Windows AMD graphics cards, starting with the Radeon RX 5600 XT. The research compares Vulkan with optimized CPU and DirectML workflows, checks that training operations stay on the GPU, and records model accuracy, timing, memory use, software versions, and failure cases. The project is experimental and does not promise a performance gain or provide a finished training backend. These notes explain the goal, target hardware, methods, and current limitations so another person can understand what the project does and reproduce its evaluation.
